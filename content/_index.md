@@ -1,7 +1,11 @@
 +++
-title = "Home"
-paginate_by = 5
-template = "index.html"
+title = "Latest posts"
+sort_by = "date"
+template = "section.html"
+
+[extra]
+max_posts = 4
+section_path = "blog/_index.md"
 
 [extra.header]
 title = "Kathrin De Cecco"
