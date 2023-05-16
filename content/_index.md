@@ -9,7 +9,7 @@ section_path = "blog/_index.md"
 
 [extra.header]
 title = "Kathrin De Cecco"
-img = "$BASE_URL/le-profile-pic.webp"
+img = "$BASE_URL/img/le-profile-pic.webp"
 +++
 
 A strange being beyond time and space. 👾 \
