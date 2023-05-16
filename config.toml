@@ -1,19 +1,76 @@
-# The URL the site will be built for
+# Necessary stuff.
 base_url = "https://toast.ws"
-
-# Whether to automatically compile all Sass files in the sass directory
-compile_sass = true
-
-# Whether to build a search index to be used later on by a JavaScript library
-build_search_index = true
-
-theme = "tabi"
 title = "Kathi's Blog"
+description = "a strange being beyond space and time"
+generate_feed = true
+compile_sass = true
+minify_html = true
+
+taxonomies = [
+    {name = "tags", feed = true},
+]
 
 [markdown]
-# Whether to do syntax highlighting
-# Theme can be customised by setting the `highlight_theme` variable to a theme supported by Zola
+external_links_target_blank = true
 highlight_code = true
+highlight_theme = "css"
 
 [extra]
-# Put all your custom variables here
+
+# Enable JavaScript theme toggler for dark/light mode (and automatic switching).
+# The default setting is the light theme.
+theme_switcher = true
+
+# Date format used when listing posts (main page, /blog section, tag posts list…)
+# Default is "6th July 2049".
+long_date_format = "%d %B %Y"
+
+# Date format used for blog posts.
+# Default is "31st Dec 2011".
+short_date_format = ""
+
+# Custom separator used in title tag and posts metadata (between date, time to read, and tags).
+separator = "•"
+
+# Full path after the base URL required. So if you were to place it in "static" it would be "/favicon.ico"
+favicon = ""
+
+# This header image is used for SEO. For example if you were to share an image via Messenger/Instagram/Twitter a preview picture is also presented
+headerImage = ""
+
+menu = [
+    { name = "blog", url = "$BASE_URL/blog" },
+    { name = "archive", url = "$BASE_URL/archive" },
+    { name = "tags", url = "$BASE_URL/tags" },
+    { name = "projects", url = "$BASE_URL/projects" },
+]
+
+# The icons available can be found in "social_icons" in the "static" folder
+socials = [
+    { name = "atom feed", url = "$BASE_URL/atom.xml", icon = "rss" },
+    { name = "github", url = "https://github.com/welpo/", icon = "github" },
+    { name = "soundcloud", url = "https://soundcloud.com/oskerwyld", icon = "soundcloud" },
+    { name = "instagram", url = "https://instagram.com/oskerwyld", icon = "instagram" },
+    { name = "youtube", url = "https://youtube.com/@oskerwyld", icon = "youtube" },
+    { name = "spotify", url = "https://open.spotify.com/artist/5Hv2bYBhMp1lUHFri06xkE", icon = "spotify" },
+]
+
+# Custom security headers. What urls should your website be able to connect to?
+# You need to specify the CSP and the URLs associated with the directive.
+# Useful if you want to load remote content safely (embed YouTube videos, which needs frame-src, for example).
+# Default directive is self.
+# Default config, allows for https remote images and embedding YouTube and Vimeo content.
+# This configuration (along with the right webserver settings) gets an A+ in Mozilla's Observatory: https://observatory.mozilla.org
+allowed_domains = [
+    { directive = "font-src", domains = ["'self'", "data:"] },
+    { directive = "img-src", domains = ["'self'", "https://*", "data:"] },
+    { directive = "script-src", domains = ["'self'"] },
+    { directive = "style-src", domains = ["'self'"] },
+    { directive = "frame-src", domains = ["player.vimeo.com", "https://www.youtube-nocookie.com"] },
+]
+
+# Custom subset of characters for the header.
+# If set to true, the `static/custom_subset.css` file will be loaded first.
+# This avoids a flashing text issue in Firefox.
+# Please see https://welpo.github.io/tabi/blog/custom-font-subset/ to learn how to create this file.
+custom_subset = true
