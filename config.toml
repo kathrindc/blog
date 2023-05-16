@@ -47,7 +47,7 @@ menu = [
 
 # The icons available can be found in "social_icons" in the "static" folder
 socials = [
-    #{ name = "atom feed", url = "$BASE_URL/atom.xml", icon = "rss" },
+    { name = "atom feed", url = "$BASE_URL/atom.xml", icon = "rss" },
     { name = "email", url = "mailto:kad@toast.ws", icon = "email" },
     { name = "github", url = "https://github.com/kathrindc/", icon = "github" },
     { name = "mastodon", url = "https://mas.toast.ws/@kad", icon = "mastodon" },
