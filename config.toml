@@ -64,7 +64,7 @@ socials = [
 allowed_domains = [
     { directive = "font-src", domains = ["'self'", "data:"] },
     { directive = "img-src", domains = ["'self'", "https://*", "data:"] },
-    { directive = "script-src", domains = ["'self'"] },
+    { directive = "script-src", domains = ["'self'", "https://app.tinyanalytics.io"] },
     { directive = "connect-src", domains = ["'self'", "ws:"]},
     { directive = "style-src", domains = ["'self'"] },
     { directive = "frame-src", domains = ["player.vimeo.com", "https://www.youtube-nocookie.com"] },
