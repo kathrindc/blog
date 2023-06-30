@@ -1,7 +1,7 @@
 +++
 title = "freeotp-dump"
-description = "Export all your FreeOTP tokens easily"
-weight = 1
+description = "Export all your FreeOTP tokens easily. Built with NextJS (client-side only)."
+weight = 2
 
 [extra]
 local_image = "img/projects/freeotp-dump.webp"
