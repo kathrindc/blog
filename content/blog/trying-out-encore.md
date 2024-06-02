@@ -13,7 +13,7 @@ Usually I just throw a quick glance at posts regarding new frameworks and then m
 That's because normally projects I find this way offer one neat gimmick and then development slowly fizzles out a year after the production-ready release.
 Encore seemed different though, so I took a closer look.
 
-![The GitHub banner for Encore &copy;](/img/blog/encore_logo_gh.webp)
+![The GitHub banner for Encore &copy;](/img/blog/encore-logo-gh.webp)
 
 Apart from the marketing containing very little corpo bullshit IMO, the tech addresses some of my personal gripes with cloud infrastructure.
 Having a layer of abstraction above vendor-specific cloud technologies is already a good start, but then they add a declarative way of defining the infra your application requires in code.
