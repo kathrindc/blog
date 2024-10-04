@@ -2,7 +2,7 @@
 base_url = "https://toast.ws"
 title = "Kathi's Blog"
 description = "a strange being beyond space and time"
-generate_feed = true
+generate_feeds = true
 compile_sass = true
 minify_html = true
 
