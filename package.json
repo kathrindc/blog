@@ -1,0 +1,10 @@
+{
+  "name": "blog",
+  "private": true,
+  "description": "",
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "license": "proprietary",
+  "packageManager": "pnpm@10.8.1"
+}
