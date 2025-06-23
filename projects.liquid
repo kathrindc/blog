@@ -1,0 +1,35 @@
+---
+layout: "base"
+eleventyExcludeFromCollections: true
+title: "Projects"
+projects:
+  - name: "discoveryd"
+    description: "Rust-based web service to manage various web endpoints for MHSs."
+    image: "discoveryd.webp"
+    url: "https://github.com/kathrindc/discoveryd"
+  - name: "freeotp-dump"
+    description: "Export all your FreeOTP tokens easily. Built with NextJS (client-side only)."
+    image: "freeotp-dump.webp"
+    url: "https://freeotp-dump.toast.ws/"
+  - name: "songdmp"
+    description: "Small rust-based utility application to dump info about the currently playing song."
+    image: "songdmp.webp"
+    url: "https://github.com/kathrindc/songdmp"
+---
+<section class="box">
+  <div class="box-title">
+    My projects
+  </div>
+  <div class="box-content" style="display: flex; flex-direction: column; justify-content: start; align-items: stretch; gap: 0.5rem;">
+    {%- for project in projects -%}
+    <a href="{{ project.url }}" style="display: flex; flex-direction: row; justify-content: start; align-items: center; text-decoration: none; gap: 0.75rem; color: black;">
+      <img src="/images/projects/{{ project.image }}" style="width: 3rem; box-shadow: 3px 3px 1px rgba(0, 0, 0, 0.3); border: white 2px solid;" />
+      <p>
+        <span style="color: blue;">{{ project.name }}</span>
+        <br/>
+        <i>{{ project.description }}</i>
+      </p>
+    </a>
+    {%- endfor -%}
+  </div>
+</section>
