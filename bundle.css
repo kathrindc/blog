@@ -140,6 +140,19 @@ img.webstamp {
   padding: 0.25rem;
 }
 
+article img {
+  max-width: 100%;
+}
+
+article img:not(:last-child) {
+  margin-top: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+article p:not(:last-child) {
+  margin-bottom: 0.75rem;
+}
+
 @media (max-width: 970px) {
   body {
     padding: 0 0.3rem;
