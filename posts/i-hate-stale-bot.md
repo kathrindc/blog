@@ -1,12 +1,13 @@
-+++
-title = "I hate stale bot"
-date = 2024-10-04
-updated = 2024-10-04
-description = "I hate it with a passion, actually."
-
-[taxonomies]
-tags = ["misc", "open-source"]
-+++
+---
+title: "I hate stale bot"
+date: 2024-10-04
+updated: 2024-10-04
+description: "I hate it with a passion, actually."
+layout: "post"
+tags:
+  - misc
+  - open-source
+---
 
 _Disclaimer:_ This post is actually just rage rambling and contains nothing of import really. Soz **¯\\_(ツ)_/¯**
 

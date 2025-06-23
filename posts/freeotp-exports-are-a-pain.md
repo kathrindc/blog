@@ -1,12 +1,15 @@
-+++
-title = "FreeOTP exports are a pain"
-date = 2023-06-06
-updated = 2023-06-06
-description = "Sometimes XML files contain binary data and no one knows why"
-
-[taxonomies]
-tags = ["tech", "code", "typescript", "javascript"]
-+++
+---
+title: "FreeOTP exports are a pain"
+date: 2023-06-06
+updated: 2023-06-06
+description: "Sometimes XML files contain binary data and no one knows why"
+layout: "post"
+tags:
+  - tech
+  - code
+  - typescript
+  - javascript
+---
 
 A couple days ago one of my mates Lukas told me about a small thing he's working on.
 His university recently started requiring everyone to have 2FA set up on their accounts, which lead quite a few people to download the next best OTP authenticator from the App Store / Play Store.
@@ -17,7 +20,7 @@ Once they exported their keys they had an XML file, which doesn't seem that bad 
 Apparently, FreeOTP (which is [open-source](https://github.com/freeotp/freeotp-android) at least) just uses default Java serialisation to export all it's values.
 The XML file was a binary-serialised version of a HashMap where the values are JSON objects that contain the cryptographic information used by each token as well as a encrypted master key that is used to encrypt the actual TOTP key data.
 
-![A hexdump of the export file created by FreeOTP](/img/blog/otp-export-hexdump.webp)
+![A hexdump of the export file created by FreeOTP](/images/posts/otp-export-hexdump.webp)
 
 Lukas and I kinda worked on our own little implementations over the course of three days.
 Well actually, it was three evenings, since we were both busy with work and uni during the day.
@@ -29,7 +32,7 @@ Lukas chose to update the package and port it to modern JavaScript so he can use
 
 Now that we had a Parser up and running to extract the fields from the serialised HashMap, we have this nice object we can work with.
 
-![Object structure parsed from the export file](/img/blog/parsed-otp-collection.webp)
+![Object structure parsed from the export file](/images/posts/parsed-otp-collection.webp)
 
 These objects contained some encrypted values, so the next challange was to figure out how to mash the data we have into the [Web Crypto API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API).
 I am going to be completely honest; this API is an absolute pain in the arse, since the most common error we encountered was "Operation failed for an operation-specific reason" (ah yes, the floor is made out of floor).
@@ -46,6 +49,6 @@ The additional authentication data (AAD for short) was stored in a field that wa
 After figuring out all of this information we didn't have many issues decrypting the master key and from there on it was only a matter of importing the decrypted master key and using it to decrypt the actual TOTP keys.
 All that was left was to encode each secret key in Base32 and build a QR code that the user can scan and I think it turned out quite well.
 
-![Screenshot of the application's page showing the resulting QR codes](/img/blog/freeotp-dump-results.webp)
+![Screenshot of the application's page showing the resulting QR codes](/images/posts/freeotp-dump-results.webp)
 
 If you want to check out the source code you can view our [GitHub repo](https://github.com/kathrindc/freeotp-dump) or use the live version right [here](https://freeotp-dump.toast.ws).

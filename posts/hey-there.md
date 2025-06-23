@@ -1,12 +1,12 @@
-+++
-title = "Hey there!"
-date = 2025-06-15
-updated = 2025-06-15
-description = "An update on where I've been."
-
-[taxonomies]
-tags = ["misc"]
-+++
+---
+title: "Hey there!"
+date: 2025-06-15
+updated: 2025-06-15
+description: "An update on where I've been."
+layout: "post"
+tags:
+  - misc
+---
 
 I want to preface this post by saying it does discuss some heavier stuff than usual on my blog. As I will explain later on in the post, I have been failing to find the words to write some of this for quite a while, therefore I'm sorry if it's a bit rambly and all over the place.
 

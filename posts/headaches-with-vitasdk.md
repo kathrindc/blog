@@ -1,12 +1,15 @@
-+++
-title = "Headaches with VitaSDK"
-date = 2024-11-04
-updated = 2024-11-04
-description = ""
-
-[taxonomies]
-tags = ["games", "tech", "homebrew", "console"]
-+++
+---
+title: "Headaches with VitaSDK"
+date: 2024-11-04
+updated: 2024-11-04
+description: ""
+layout: "post"
+tags:
+  - games
+  - tech
+  - homebrew
+  - console
+---
 
 In my last post, I talked about getting PlayStation Vita for myself and initially modding it.
 Now I want to write code for it, but that's turning out to be quite an adventure in it's own right.

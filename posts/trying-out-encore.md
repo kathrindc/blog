@@ -1,19 +1,22 @@
-+++
-title = "Trying out Encore"
-date = 2024-06-02
-updated = 2024-06-02
-description = "Seems like a really relaxed approach to backend development"
-
-[taxonomies]
-tags = ["code", "typescript", "golang", "tech"]
-+++
+---
+title: "Trying out Encore"
+date: 2024-06-02
+updated: 2024-06-02
+description: "Seems like a really relaxed approach to backend development"
+layout: "post"
+tags:
+  - code
+  - typescript
+  - golang
+  - tech
+---
 
 Recently, while browsing the website formerly known as Twitter, I stumbled across a new and fancy backend framework called Encore.
 Usually I just throw a quick glance at posts regarding new frameworks and then move on with my day.
 That's because normally projects I find this way offer one neat gimmick and then development slowly fizzles out a year after the production-ready release.
 Encore seemed different though, so I took a closer look.
 
-![The GitHub banner for Encore &copy;](/img/blog/encore-logo-gh.webp)
+![The GitHub banner for Encore &copy;](/images/posts/encore-logo-gh.webp)
 
 Apart from the marketing containing very little corpo bullshit IMO, the tech addresses some of my personal gripes with cloud infrastructure.
 Having a layer of abstraction above vendor-specific cloud technologies is already a good start, but then they add a declarative way of defining the infra your application requires in code.

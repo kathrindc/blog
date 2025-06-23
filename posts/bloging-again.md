@@ -1,12 +1,12 @@
-+++
-title = "Blogging (again)"
-date = 2023-05-16
-updated = 2023-05-16
-description = "I reworked the site and I must scream"
-
-[taxonomies]
-tags = ["misc"]
-+++
+---
+title: "Blogging (again)"
+date: 2023-05-16
+updated: 2023-05-16
+description: "I reworked the site and I must scream"
+layout: "post"
+tags:
+  - misc
+---
 
 Yet again, I have started doing a thing with no prospect at all of whether or not I will actually finish anything.
 

@@ -1,12 +1,13 @@
-+++
-title = "Developer's block?"
-date = 2024-05-15
-updated = 2024-05-15
-description = "Is that a thing? If so, I think I got it."
-
-[taxonomies]
-tags = ["misc", "work"]
-+++
+---
+title: "Developer's block?"
+date: 2024-05-15
+updated: 2024-05-15
+description: "Is that a thing? If so, I think I got it."
+layout: "post"
+tags:
+  - misc
+  - work
+---
 
 Yeah nah, to be honest, ever since yesterday I kinda just stopped feeling like coding in my free time and that's not good.
 Honestly, ever since I've been on recovery from an operation I had mid-March, I've just been so on-and-off when it comes to coding.

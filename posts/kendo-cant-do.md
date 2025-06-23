@@ -1,12 +1,15 @@
-+++
-title = "Kendo Can't Do"
-date = 2023-05-17
-updated = 2023-05-17
-description = "A tale of pure and unadulterated anger at a JavaScript library"
-
-[taxonomies]
-tags = ["tech", "code", "javascript", "work"]
-+++
+---
+title: "Kendo Can't Do"
+date: 2023-05-17
+updated: 2023-05-17
+description: "A tale of pure and unadulterated anger at a JavaScript library"
+layout: "post"
+tags:
+  - tech
+  - code
+  - javascript
+  - work
+---
 
 First things first. No hard feelings, but KendoUI (at least the jQuery version) is one of the worst libraries I ever had the displeasure of using.
 
@@ -35,7 +38,7 @@ The library I wrote includes a couple Quality-of-Life features such as:
 These are just some examples that, at least in my opinion, should be included in Kendo out of the box.
 Personally, I think that the price tag for such an outdated, unstable, inconsistent piece of software is way too high. So I decided it's time to end this stockholm-ass relationship.
 
-![The "friendship ended with mudasir" meme edited to "friendship ended with Kendo UI"](/img/blog/friendship-ended-with-kendoui.webp)
+![The "friendship ended with mudasir" meme edited to "friendship ended with Kendo UI"](/images/posts/friendship-ended-with-kendoui.webp)
 
 Since my workplace is *very* strict when it comes to just bringing in random code from elsewhere, I have decided to build my own library (oh yay, yet another JavaScript library).
 This new library shall be free of legacy crap that no-one in their right mind should use anymore, therefore also as lightweight and efficient as possible, using ES6 classes instead of being a jQuery plugin, and *definitely* no god damn `eval`.

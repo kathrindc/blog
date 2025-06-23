@@ -1,12 +1,15 @@
-+++
-title = "Yet another WordPress theme"
-date = 2023-05-18
-updated = 2023-05-18
-description = "Time to make the theme to end all themes"
-
-[taxonomies]
-tags = ["tech", "code", "php", "wordpress"]
-+++
+---
+title: "Yet another WordPress theme"
+date: 2023-05-18
+updated: 2023-05-18
+description: "Time to make the theme to end all themes"
+layout: "post"
+tags:
+  - tech
+  - code
+  - php
+  - wordpress
+---
 
 I have been making WordPress sites for friends, family and co for some while.
 Yet, every time it comes to the age old question of what theme to use I find myself getting annoyed at various aspects of existing themes.

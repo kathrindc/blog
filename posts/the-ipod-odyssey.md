@@ -1,12 +1,13 @@
-+++
-title = "The iPod Odyssey"
-date = 2024-10-10
-updated = 2024-10-10
-description = "A journey towards digital minimalism ( + small updates )"
-
-[taxonomies]
-tags = ["misc", "tech"]
-+++
+---
+title: "The iPod Odyssey"
+date: 2024-10-10
+updated: 2024-10-10
+description: "A journey towards digital minimalism ( + small updates )"
+layout: "post"
+tags:
+  - misc
+  - tech
+---
 
 About two weeks ago, I started noticing how overly instinctual it has become for me to check my phone constantly.
 Two minutes in the checkout queue at the grocery store? Check emails.
@@ -81,7 +82,7 @@ Thinking about what albums I want on my jukebox really gave me an appreciation f
 If you have an old iPod at home, try and see if you can fix it, cause for one it certainly is a fun side project to customize everything, and secondly it's just a good device.
 It really is lovely.
 
-![Image collage of the modded iPod. On the left a picture of the U2 back-plate and on the right playing a song from the album "five seconds flat" by Lizzy McAlpine](/img/blog/ipod.webp)
+![Image collage of the modded iPod. On the left a picture of the U2 back-plate and on the right playing a song from the album "five seconds flat" by Lizzy McAlpine](/images/posts/ipod.webp)
 
 PS.: Oh yeah I changed the back cover, front plate and center button.
 The back case is of the U2 special edition iPods and I thought it would be funny.

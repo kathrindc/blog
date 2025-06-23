@@ -1,12 +1,15 @@
-+++
-title = "I bought a PlayStation Vita in 2024"
-date = 2024-10-30
-updated = 2024-10-30
-description = "Why did Sony drop this thing so hard?!"
-
-[taxonomies]
-tags = ["games", "tech", "homebrew", "console"]
-+++
+---
+title: "I bought a PlayStation Vita in 2024"
+date: 2024-10-30
+updated: 2024-10-30
+description: "Why did Sony drop this thing so hard?!"
+layout: "post"
+tags:
+  - games
+  - tech
+  - homebrew
+  - console
+---
 
 The PlayStation Vita was the spiritual successor to the original PlayStation Portable and I wanted one for quite a while.
 Before today, I only ever saw a Vita once though.

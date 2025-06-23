@@ -1,12 +1,13 @@
-+++
-title = "Goodbye, Ricing."
-date = 2024-05-21
-updated = 2024-05-21
-description = "So long and thanks for all the screenshots."
-
-[taxonomies]
-tags = ["misc", "linux"]
-+++
+---
+title: "Goodbye, Ricing."
+date: 2024-05-21
+updated: 2024-05-21
+description: "So long and thanks for all the screenshots."
+layout: "post"
+tags:
+  - misc
+  - linux
+---
 
 I think everyone who's gone down the rabbit-hole of daily-driving a Linux distro has been there.
 You look at your desktop and just kinda get this urge to tinker around a little bit.

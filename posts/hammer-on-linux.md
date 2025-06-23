@@ -1,11 +1,14 @@
-+++
-title = "Valve's Hammer Editor on Linux"
-date = 2024-03-06
-updated = 2024-03-06
-
-[taxonomies]
-tags = ["games", "source", "hammer", "linux"]
-+++
+---
+title: "Valve's Hammer Editor on Linux"
+date: 2024-03-06
+updated: 2024-03-06
+layout: "post"
+tags:
+  - games
+  - source
+  - hammer
+  - linux
+---
 
 So the other day I wanted to mess around with making my own game-mode for Garry's Mod. I thought I could make a quick map with some custom entities preset to make testing a tad faster. Turns out getting Source's level editor to function properly on Linux is a bit of a headache.
 
