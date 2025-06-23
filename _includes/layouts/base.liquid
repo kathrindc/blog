@@ -1,0 +1,35 @@
+<!ODCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content="{{ eleventy.generator }}" />
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="/bundle.css" />
+  </head>
+  <body>
+    <main style="{{ grid | toGridStyle }}">
+      {{ content }}
+    </main>
+    <aside class="box">
+      <div class="box-title">
+        Site Menu
+      </div>
+      <div class="box-content">
+        <a href="/">
+          <img src="/images/icons/video-display.svg" />
+          Homepage
+        </a>
+        <a href="/posts">
+          <img src="/images/icons/folder-documents.svg" />
+          Blog Posts
+        </a>
+        <a href="/projects">
+          <img src="/images/icons/madobe_nanami.png" />
+          Projects
+        </a>
+      </div>
+    </aside>
+    {{ playlist | toSCMPlayer }}
+  </body>
+</html>
