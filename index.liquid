@@ -43,6 +43,16 @@ playlist:
     <img src="/images/USERPROFILE.png" style="width: 200px; margin: 2px -30px -30px 0;" />
   </div>
 </section>
+<section class="box col-span-2">
+  <div class="box-title">
+    Latest post
+  </div>
+  <div class="box-content">
+    {% assign latestPost = collections.all | last %}
+    <a href="{{ latestPost.url }}">{{ latestPost.data.title }}</a>
+    <p>{{ latestPost.data.description }}</p>
+  </div>
+</section>
 <section class="box">
   <div class="box-title">
     My stamps
@@ -102,16 +112,6 @@ playlist:
     <a href="https://ladyrose.buruma.net/offspring"><img src="/images/fanlistings/theoffspring.png" /></a>
     <a href="https://pinkfloyd.thoughtdreams.org"><img src="/images/fanlistings/pinkfloyd.gif" /></a>
     <a href="https://movieloverfls.org/21pilots"><img src="/images/fanlistings/21pilots.png" /></a>
-  </div>
-</section>
-<section class="box col-span-2">
-  <div class="box-title">
-    Latest post
-  </div>
-  <div class="box-content">
-    {% assign latestPost = collections.all | last %}
-    <a href="{{ latestPost.url }}">{{ latestPost.data.title }}</a>
-    <p>{{ latestPost.data.description }}</p>
   </div>
 </section>
 <section class="box col-span-2">
