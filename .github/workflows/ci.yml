@@ -14,12 +14,25 @@ jobs:
         run: pnpm install
       - name: Build the website
         run: pnpm build
+      - name: Compress output directory
+        run: tar czvf site.tar.xz _site
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: _site
+          path: site.tar.xz
   deploy:
     runs-on: ubuntu-latest
     needs: build
     environment: deploy
     if: github.ref == 'refs/heads/main'
     steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: _site
+      - name: Unpack tarball
+        run: tar xzvf site.tar.xz
       - name: Initialize the ssh-agent
         uses: webfactory/ssh-agent@v0.4.1
         with:
