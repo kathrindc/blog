@@ -1,8 +1,7 @@
 name: CI
-run-name: Zola blog deployment
+run-name: 11ty deployment
 on:
   push:
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -10,26 +9,23 @@ jobs:
     steps:
       - name: Checkout the current branch
         uses: actions/checkout@v3
-
       - name: Initialize the ssh-agent
         uses: webfactory/ssh-agent@v0.4.1
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-      - name: Install Zola
-        run: sudo snap install zola --edge
-
+      - name: Install pnpm
+        run: sudo snap install pnpm
+      - name: Load node modules
+        run: pnpm install
       - name: Build the website
-        run: zola build
-
+        run: pnpm build
       - name: Scan the host key
         run: mkdir -p ~/.ssh/ && ssh-keyscan -H $DEPLOY_SERVER >> ~/.ssh/known_hosts
         env:
           DEPLOY_SERVER: ${{ secrets.DEPLOY_SERVER }}
-
       - name: Deploy the website
         run: >-
-          rsync -avx --delete --exclude '.ssh' public/ $DEPLOY_USERNAME@$DEPLOY_SERVER:$DEPLOY_DIR
+          rsync -avx --delete --exclude '.ssh' _site/ $DEPLOY_USERNAME@$DEPLOY_SERVER:$DEPLOY_DIR
         env:
           DEPLOY_SERVER: ${{ secrets.DEPLOY_SERVER }}
           DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
