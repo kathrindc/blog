@@ -1,3 +1,5 @@
+import { feedPlugin } from "@11ty/eleventy-plugin-rss"
+
 export default async function(eleventyConfig) {
 	// Add alias for commonly used layouts
 	eleventyConfig.addLayoutAlias("base", "layouts/base.liquid")
@@ -13,6 +15,25 @@ export default async function(eleventyConfig) {
 	eleventyConfig.addPassthroughCopy("bundle.css")
 	eleventyConfig.addPassthroughCopy("images")
 	eleventyConfig.addPassthroughCopy("fonts")
+
+	// Configure feed generation plugin
+	eleventyConfig.addPlugin(feedPlugin, {
+		type: "atom",
+		outputPath: "/atom.xml",
+		collection: {
+			name: "all",
+			limit: 10,
+		},
+		metadata: {
+			language: "en",
+			title: "Kat's Blog",
+			subtitle: "A strange being beyond time and space. 👾",
+			base: "https://toast.ws/",
+			author: {
+				name: "Kathrin De Cecco",
+			},
+		},
+	})
 }
 
 function toSCMPlayer(playlist) {
