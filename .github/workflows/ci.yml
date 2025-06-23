@@ -9,16 +9,21 @@ jobs:
     steps:
       - name: Checkout the current branch
         uses: actions/checkout@v3
-      - name: Initialize the ssh-agent
-        uses: webfactory/ssh-agent@v0.4.1
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - name: Install pnpm
         uses: pnpm/action-setup@v4
       - name: Load node modules
         run: pnpm install
       - name: Build the website
         run: pnpm build
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Initialize the ssh-agent
+        uses: webfactory/ssh-agent@v0.4.1
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - name: Scan the host key
         run: mkdir -p ~/.ssh/ && ssh-keyscan -H $DEPLOY_SERVER >> ~/.ssh/known_hosts
         env:
