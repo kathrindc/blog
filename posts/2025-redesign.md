@@ -25,6 +25,8 @@ After finding a cool background image, which matched the background colour I wan
 With the site menu buttons I tried to mimic the "Web 2.0 Gloss" that was everywhere a decade or so ago, back when most buttons where images lmao.
 Obviously I didn't wanna make the browser load a billion image files (not counting the fanlisting buttons, those are important lol).
 So I attempted to get somewhere close enough using CSS gradients, which I also did for the window borders around the main blocks of the site.
+Another thing that I also remembered from messing around with it quite a while ago was the SCM Player you can see at the top of the page.
+I put some songs in, which I like and that fit the general vibe of the site.
 And since I'm already making something in homage of that era, I put a small Madobe Nanami on one of the buttons.
 Idk it just felt fitting, okay? xD
 
