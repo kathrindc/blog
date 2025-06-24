@@ -10,6 +10,7 @@ export default async function(eleventyConfig) {
 	eleventyConfig.addLiquidFilter("toGridStyle", toGridStyle)
 	eleventyConfig.addLiquidFilter("groupPostsByYear", groupPostsByYear)
 	eleventyConfig.addLiquidFilter("toDateString", toDateString)
+	eleventyConfig.addLiquidFilter("toISOString", toISOString)
 
 	// Add files to pass through directly
 	eleventyConfig.addPassthroughCopy("bundle.css")
@@ -83,4 +84,8 @@ function groupPostsByYear(posts) {
 
 function toDateString(date) {
 	return `${date.getYear() + 1900}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getDate().toString().padStart(2, '0')}`
+}
+
+function toISOString(date) {
+	return date.toISOString()
 }

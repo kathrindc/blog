@@ -6,6 +6,10 @@ layout: "base"
     Post: {{ title }}
   </div>
   <div class="box-content">
+    <h3 class="post-title">{{ title }}</h3>
+    <p class="post-meta">
+      Posted on <i title="{{ page.date | toISOString }}">{{ page.date | toDateString }}</i>
+    </p>
     {{ content }}
   </div>
 </article>

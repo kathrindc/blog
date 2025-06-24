@@ -140,6 +140,15 @@ img.webstamp {
   padding: 0.25rem;
 }
 
+article h3.post-title {
+  margin-top: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+article p.post-meta {
+  opacity: 50%;
+}
+
 article img {
   max-width: 100%;
 }
