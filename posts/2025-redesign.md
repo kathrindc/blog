@@ -2,7 +2,7 @@
 layout: "post"
 title: "2025 Redesign"
 description: "I felt like giving things a fresh coat of paint, or rather a coat of gloss."
-date: git Created
+date: "git Created"
 updated: git Last Modified
 tags:
   - misc
