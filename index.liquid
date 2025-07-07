@@ -117,6 +117,16 @@ playlist:
 </section>
 <section class="box col-span-2">
   <div class="box-title">
+    Web-Rings!
+  </div>
+  <div class="box-content">
+    <div id="aero-ring">
+       <script src="https://frutigeraeroarchive.org/javascript/aero-webring.js"></script>
+    </div>
+  </div>
+</section>
+<section class="box col-span-2">
+  <div class="box-title">
     Thanks to...
   </div>
   <div class="box-content">
@@ -139,3 +149,32 @@ playlist:
     <a href="https://mas.toast.ws/@kad" title="Mastodon"><img src="/images/icons/mastodon.png" style="width: 1.5rem;" /></a>
   </div>
 </section>
+<style>
+  #aero-ring {
+    background: linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 1) 0%,
+      rgba(64, 64, 64, 1) 100%
+    );
+    border-radius: 10px;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.5),
+      inset 0 2px 1px rgba(255, 255, 255, 0.15),
+      inset 0 -2px 1px rgba(0, 0, 0, 0.35);
+    margin: 10px auto 0px auto;
+    padding: 0.75rem;
+    max-width: 15rem;
+    font-family: sans-serif;
+  }
+
+  #aero-ring a,
+  #aero-ring a:visited {
+    color: white !important;
+  }
+  #aero-ring a:focus,
+  #aero-ring a:hover {
+    color: lightgrey !important;
+  }
+  #aero-ring a:active {
+    color: darkgrey !important;
+  }
+</style>
