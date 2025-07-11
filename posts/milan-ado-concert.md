@@ -1,6 +1,6 @@
 ---
 title: "We saw Ado live in Milan!"
-date: "git Created"
+date: 2025-07-06
 description: "It was absolutely amazing and I'm gonna ramble about it."
 layout: "post"
 tags:

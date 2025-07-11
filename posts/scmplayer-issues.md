@@ -2,7 +2,7 @@
 layout: "post"
 title: "SCMPlayer is down"
 description: "So I had to remove it from the site for now."
-date: "git Created"
+date: 2025-07-02
 tags:
   - misc
 ---

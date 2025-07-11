@@ -1,7 +1,6 @@
 ---
 title: "Hey there!"
-date: "git Created"
-# updated: 2025-06-15
+date: 2025-06-15
 description: "An update on where I've been."
 layout: "post"
 tags:
