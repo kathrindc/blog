@@ -1,0 +1,657 @@
+---
+eleventyExcludeFromCollections: true
+---
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/images/shrines/source/favicon.png" />
+    <title>hl2.exe shrine</title>
+  </head>
+  <body>
+    <div id="notify-area"></div>
+    <main></main>
+    <div id="mobile-barrier">This page won't work properly on mobile or screens smaller than 800x600.<br/><a href="/">&larr; back to main site</a></div>
+    <noscript>You need JavaScript enabled for this page to work.</noscript>
+    <script id="shrinejs" defer>
+      (() => {
+        //
+        // Oh, fiddlesticks!
+        //
+        // The JavaScript code for this shrine is an utter mess and I don't
+        // know if it's a good idea to use this as a reference for anything.
+        //
+        // You are more than welcome to take a look, but...
+        //   prepare for unforseen consequences.
+        //
+
+        const iconMap = {
+          error: '-199px -343px',
+        }, mainMenuAssets = {
+          audioBuffers: {
+            'hl2-buttonrollover': '/shrines/source/hl2-buttonrollover.ogg',
+            'hl2-buttonclick': '/shrines/source/hl2-buttonclick.ogg',
+            'hl2-buttonclickrelease': '/shrines/source/hl2-buttonclickrelease.ogg',
+          }
+        }
+
+        let mainEl = null, notifyAreaEl = null, notifyTimeouts = {}, isAutoplayOkay = false, windows = {}, audioContext = new AudioContext(), audioBuffers = {}
+
+        function loadAudioAsBuffer(url) {
+          return new Promise((resolve, reject) => {
+            let req = new XMLHttpRequest()
+
+            req.open('GET', url, true)
+
+            req.responseType = 'arraybuffer'
+            req.onerror = reject
+
+            req.onload = () => {
+              audioContext.decodeAudioData(req.response, resolve, reject)
+            }
+
+            req.send()
+          })
+        }
+
+        async function loadAssetBatch(batch) {
+          for (let name in batch.audioBuffers) {
+            if (audioBuffers[name]) continue
+            else audioBuffers[name] = await loadAudioAsBuffer(batch.audioBuffers[name])
+          }
+        }
+
+        function notify(content, level = 'info', id = null, style = '', decayMs = 10000) {
+          id ??= Math.floor(Math.random() * 1000000) + '-' + Date.now()
+          let element = document.querySelector('#notif-' + id)
+
+          if (!element) {
+            element = document.createElement('div')
+            element.id = '#notif-' + id
+            element.className = level
+            element.style = 'display: flex; flex-direction: row; gap: 0.4rem; padding: 0.35rem 0.6rem; color: rgba(60, 60, 60, 1); border: 2px solid transparent; border-color: rgba(0, 0, 0, 0.75) rgba(228, 228, 228, 1) rgba(228, 228, 228, 1) rgba(0, 0, 0, 0.75);'
+            notifyAreaEl.appendChild(element)
+          }
+
+          if (typeof (content) === 'string') {
+            element.innerHTML = content
+          } else {
+            element.clear()
+            element.appendChild(content)
+          }
+
+          if (notifyTimeouts[id]) {
+            clearTimeout(notifyTimeouts[id])
+            delete notifyTimeouts[id]
+          }
+
+          if (decayMs > 0) {
+            notifyTimeouts[id] = setTimeout(
+              () => {
+                element.remove()
+                delete notifyTimeouts[id]
+              }, decayMs
+            )
+          }
+        }
+
+        function getIcon(name) {
+          if (!iconMap[name]) {
+            return ''
+          }
+
+          return `<span style="background: url(/images/shrines/source/sprite-compress.png); background-position: ${iconMap[name]}; width: 16px; height: 16px; display: inline-block;"></span>`
+        }
+
+        function clearArea() {
+          mainEl.innerHTML = ''
+        }
+
+        function handleLuaErrors(origin, type = 'addon') {
+          let innerHTML = `${getIcon('error')}<span style="font-size: 0.75rem; font-weight: 600; margin-top: 1px;">The ${type} "${origin}" is creating errors, check the dev-tools for details.</span>`
+
+          notify(innerHTML, 'warning', 'lua-errors')
+        }
+
+        const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms))
+        const devMsg = (format, ...params) => console.log('%c' + format, 'font-family: "Trebuchet", "Tahoma", "Arial", sans-serif; font-smooth: never;', ...params)
+        const devErr = (format, ...params) => console.log('%c' + format, 'font-family: "Trebuchet", "Tahoma", "Arial", sans-serif; font-smooth: never; color: red;', ...params)
+        const withPreventDefault = func => event => {
+          event.preventDefault()
+          func()
+        }
+
+        class UIWindow {
+          static open(id) {
+            let recycled = true
+
+            if (!windows[id]) {
+              windows[id] = new UIWindow(id)
+              recycled = false
+            }
+
+            windows[id].focus()
+            return [recycled, windows[id]]
+          }
+
+          constructor(id) {
+            this.id = id
+            this.element = document.createElement('div')
+            this.element.className = 'ui-window'
+            this.element.style = 'z-index: 20;'
+            this.element.id = 'ui-windows_' + id
+            this.x = 300
+            this.y = 300
+            this.width = 380
+            this.height = 360
+            this.dragOrigin = null
+            this.tabs = null
+            this.activeTab = null
+
+            let titleBarEl = document.createElement('div')
+            let titleEl = document.createElement('div')
+            let xEl = document.createElement('div')
+            let contentEl = document.createElement('div')
+
+            xEl.className = 'wnd-x'
+            xEl.style = 'font-size: 1rem;'
+            xEl.innerHTML = '&#x2715;'
+            titleEl.className = 'wnd-title'
+            titleEl.innerText = id
+            contentEl.className = 'wnd-content'
+            titleBarEl.className = 'wnd-titlebar'
+
+            titleBarEl.setAttribute('draggable', true)
+            xEl.addEventListener('click', event => this.destroy())
+            titleBarEl.appendChild(titleEl)
+            titleBarEl.appendChild(xEl)
+
+            this.element.appendChild(titleBarEl)
+            this.element.appendChild(contentEl)
+
+            this.syncStyle()
+            mainEl.appendChild(this.element)
+
+            this.element.addEventListener('dragstart', event => this.ondragstart(event))
+            this.element.addEventListener('dragend', event => this.ondragend(event))
+            this.element.addEventListener('drag', event => this.ondrag(event))
+            this.element.addEventListener('click', event => this.focus())
+          }
+
+          setTitle(title) {
+            this.element.querySelector('.wnd-title').innerText = title
+          }
+
+          addTab(title, init) {
+            if (!this.tabs) {
+              this.element.querySelector('.wnd-content').remove()
+
+              this.tabs = []
+              this.activeTab = 0
+              this.element.innerHTML += '<div class="wnd-tabstrip"></div><div class="wnd-tabpane"></div>'
+            }
+
+            this.tabs.push([title, init])
+            this.updateTabStrip()
+          }
+
+          updateTabStrip() {
+            let tabStripEl = this.element.querySelector('.wnd-tabstrip')
+            let fillerEl = document.createElement('div')
+            let tabEls = this.tabs.map(([title], index) => {
+              let tabEl = document.createElement('a')
+
+              tabEl.innerText = title
+
+              tabEl.setAttribute('data-tab-index', `${index}`)
+              tabEl.addEventListener('click', event => {
+                event.preventDefault()
+                this.setActiveTab(index)
+              })
+
+              return tabEl
+            })
+
+            tabStripEl.innerHTML = ''
+            fillerEl.style = 'flex-grow: 1; border-bottom: 1px solid white;'
+
+            tabEls.forEach(tabEl => tabStripEl.appendChild(tabEl))
+            tabStripEl.appendChild(fillerEl)
+            this.setActiveTab(this.activeTab)
+          }
+
+          setActiveTab(index) {
+            let tabPaneEl = this.element.querySelector('.wnd-tabpane')
+            let [_, init] = this.tabs[index]
+
+            this.activeTab = index
+            tabPaneEl.innerHTML = ''
+
+            this.element.querySelectorAll('.wnd-tabstrip a')
+              .forEach(el => el && el.classList[
+                el.getAttribute('data-tab-index') == `${index}` ? 'add' : 'remove'
+              ]('cur'))
+
+            init(tabPaneEl)
+          }
+
+          setContent(init) {
+            if (this.tabs) {
+              let tabStripEl = this.element.querySelector('.wnd-tabstrip')
+              let tabPaneEl = this.element.querySelector('.wnd-tabpane')
+
+              tabStripEl.remove()
+              tabPaneEl.remove()
+
+              this.tabs = null
+              this.activeTab = null
+
+              this.element.innerHTML += '<div class="wnd-content"></div>'
+            }
+
+            let contentEl = this.element.querySelector('.wnd-content')
+
+            if (typeof (init) === 'function') {
+              init(contentEl)
+            } else {
+              contentEl.innerHTML = init
+            }
+          }
+
+          syncStyle() {
+            this.element.style.top = `${this.y}px`
+            this.element.style.left = `${this.x}px`
+            this.element.style.width = `${this.width}px`
+            this.element.style.height = `${this.height}px`
+          }
+
+          resize(width, height) {
+            this.width = width
+            this.height = height
+
+            this.syncStyle()
+          }
+
+          ondragstart(event) {
+            this.dragOrigin = { x: event.x - this.element.offsetLeft, y: event.y - this.element.offsetTop }
+
+            let image = new Image()
+            image.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs='
+
+            event.dataTransfer.setDragImage(image, 0, 0)
+          }
+
+          ondragend(event) {
+            this.dragOrigin = null
+          }
+
+          // TODO! Uhhhh, pick up where I left off.
+          ondrag(event) {
+            if (!this.dragOrigin) return
+
+            this.x = event.x - this.dragOrigin.x
+            this.y = event.y - this.dragOrigin.y
+
+            this.syncStyle()
+          }
+
+          unfocus() {
+            this.element.style.opacity = '75%'
+            this.element.style.zIndex = 15
+          }
+
+          focus() {
+            for (let id in windows) {
+              if (id != this.id) windows[id].unfocus()
+            }
+
+            this.element.style.opacity = '100%'
+            this.element.style.zIndex = 20
+          }
+
+          destroy() {
+            this.element.remove()
+            delete windows[id]
+
+            if (typeof (this.onDestroy) === 'function')
+              this.onDestroy()
+          }
+        }
+
+        function toSettingsWindow() {
+          let [recycled, wnd] = UIWindow.open('settings')
+
+          if (!recycled) {
+            let getWindowSize = () => `${mainEl.clientWidth} x ${mainEl.clientHeight}`
+            let onWindowSizeChange = () => {
+              let optionEl = document.querySelector('#settings-option-resolution')
+
+              if (optionEl) optionEl.innerText = getWindowSize()
+            }
+
+            wnd.addTab('Video', contentEl => {
+              contentEl.innerHTML = `<div id="settings-option-resolution">${getWindowSize()}</div>`
+            })
+            wnd.addTab('Audio', () => {
+            })
+
+            window.addEventListener('resize', onWindowSizeChange)
+
+            wnd.onDestroy = () => {
+              window.removeEventListener('resize', onWindowSizeChange)
+            }
+          }
+        }
+
+        function toNewGameWindow() {
+          let [recycled, wnd] = UIWindow.open('new_game')
+
+          if (!recycled) {
+            wnd.setTitle('New Game')
+            wnd.setContent(init => init.innerHTML = 'fuck')
+          }
+        }
+
+        function viewLoading(doLoad, next = () => clearArea()) {
+          mainEl.innerHTML = `<div style="z-index: 10; position: absolute; color: white; bottom: 0.75rem; right: 0.75rem; padding: 0.5rem 0.75rem; border-radius: 0.35rem; font-size: 1.25rem; background: rgba(0, 0, 0, 0.65)">Loading...</div><img style="width: 100%; height: 100%; background: url(/images/shrines/source/loading.jpeg); background-size: cover; background-position: center; -webkit-filter: blur(5px); -moz-filter: blur(5px); -o-filter: blur(5px); -ms-filter: blur(5px); filter: blur(5px); overflow: hidden;" />`
+          doLoad()
+            .then(() => wait((Math.random() * 3000) + 2500))
+            .then(() => next())
+        }
+
+        function viewConnecting(next = () => clearArea()) {
+          mainEl.innerHTML = '<div class="ui-window" style="z-index: 10; position: absolute; color: white; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 0.3rem 0.75rem; border-radius: 0.35rem; width: 380px; max-width: 380px;"><div style="display: flex; flex-direction: row; justify-content: center; align-items: center;"><span style="font-weight: bold; font-size: 0.6rem; flex-grow: 1; padding-top: 0.25rem;">LOADING...</span></div><div id="loading-progress" style="border: 1px solid black; border-color: rgba(0, 0, 0, 0.75) rgba(228, 228, 228, 0.75) rgba(228, 228, 228, 0.75) rgba(0, 0, 0, 0.75); width: 100%; margin-top: 0.45rem; margin-bottom: 0.5rem; padding: 0px 2px 2px 2px; color: white; background: rgba(0, 0, 0, 0.5); overflow: hidden; max-width: 100%;"><span style="font-size: 1rem;"></span></div><div id="loading-text" style="flex-grow: 1; font-size: 0.75rem; margin-bottom: 0.5rem;"></div></div><img style="width: 100%; height: 100%; background: url(/images/shrines/source/loading.jpeg); background-size: cover; background-position: center; -webkit-filter: blur(5px); -moz-filter: blur(5px); -o-filter: blur(5px); -ms-filter: blur(5px); filter: blur(5px); overflow: hidden;" />'
+          let bar = document.querySelector('#loading-progress span')
+          let text = document.querySelector('#loading-text')
+          let setProgress = percent => bar.innerText = '▊'.repeat(Math.ceil(percent * 22) + 1)
+
+          (async () => {
+            let totalCount = Object.keys(assets).map(assetType => Object.keys(assets[assetType])).reduce((a, b) => a + b)
+            let loaded = 0
+
+            setProgress(0)
+
+            text.innerText = ' '
+            await wait(1500)
+
+            devMsg('maxplayers set to 1')
+
+            text.innerText = 'Retrieving server info...'
+            await wait(800)
+
+            for (let assetType in assets) {
+              let loadFn = loadFns[assetType]
+
+              if (!loadFn) {
+                continue;
+              }
+
+              for (let asset in assets[assetType]) {
+                devMsg('downloading %s', assetType, assets[assetType][asset])
+                text.innerText = `Downloading ${assets[assetType][asset].substring(1)}`
+                assets[assetType][asset] = await loadFn(assets[assetType][asset])
+                await wait(1000)
+                setProgress((loaded / totalCount) * 0.6 + 0.1)
+              }
+            }
+
+            text.innerText = 'Sending client info...'
+            setProgress(0.8)
+            await wait(2500)
+            handleLuaErrors('skybox\\menu.lua', 'script')
+            await wait(500)
+            next()
+          })()
+        }
+
+        function viewMainMenu() {
+          clearArea()
+
+          mainEl.innerHTML = `<div style="z-index: 10; position: absolute; width: 100%; height: 100%; left: 0; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; justify-content: center; align-items: start; padding: 0 3rem; gap: 0.75rem;" class="hl2-menu"><p style="font-family: 'halflife2'; font-size: 3rem; margin-top: 0.5rem; margin-bottom: 1rem;">HALF-LIFE &#x00B2;</p><a href="#newgame">NEW GAME</a><a href="#loadgame">LOAD GAME</a><a href="#options">OPTIONS</a><a href="#quit">QUIT GAME</a></div><video src="/shrines/source/city17.webm" loop playsinline autoplay="auto" style="width: auto; height: 100%;" volume="0.5" />`
+
+          let newGameEl = mainEl.querySelector('a[href="#newgame"]')
+          let loadGameEl = mainEl.querySelector('a[href="#loadgame"]')
+          let optionsEl = mainEl.querySelector('a[href="#options"]')
+          let quitEl = mainEl.querySelector('a[href="#quit"]')
+          let doHoverSound = withPreventDefault(() => playAudio('hl2-buttonrollover', 0.2))
+          let withClickSound = func => withPreventDefault(() => [playAudio('hl2-buttonclickrelease', 0.2), func()])
+
+          newGameEl.onmouseover = doHoverSound
+          loadGameEl.onmouseover = doHoverSound
+          optionsEl.onmouseover = doHoverSound
+          quitEl.onmouseover = doHoverSound
+
+          newGameEl.onclick = withClickSound(() => toNewGameWindow())
+          loadGameEl.onclick = withClickSound(() => {})
+          optionsEl.onclick = withClickSound(() => toSettingsWindow())
+          quitEl.onclick = withClickSound(() => window.location.assign('/'))
+        }
+
+        function displayGreeting() {
+          console.groupCollapsed('Mr. Freeman....')
+          console.log('%c██████████████████████████████████▓█████████████████████████████████████████████\n██████████████████████████████████████████████▓▓████████████████████████████████\n██you█are█not████████████████████▓███████▓▓███▓▓██▓█████████████████████████████\n███supposed█to██████████████▓▓███▓▓██████▓▒▒ ▒▒▓▓███████████████████████████████\n█████be█here...████████████▓▒▒▒▒▓▓▓█▓          ▓▓███████████████████████████████\n███████████████████████████▓▒▒▒▒▒░             ▓▓███████████████████████████████\n███████████████████████████▓▒▒▒▒▒░            ░█████████████████████████████████\n███████████████████████████▓▒▒▒▒▒▒░            ▓▓███████████████████████████████\n███████████████████████████▓▒▒▒▒▒▒▒▒            ▒▓██░▒▓█████████████████████████\n███████████████████████████▓▒▒▒▒▒▒▒▒▒▒▒▒▓███▒   ░██▓▓░▒█████████████████████████\n████████████████████████████████▓▓▒▒▓███▓▓▓▓▓▓▒ ░▓█▒▒▒▓█████████████████████████\n████████████████████████████▓▓███▓█▓▒████▓▓█▓    ▓▓ ░▒██████████████████████████\n████████████████████████████▒▓▓▓▓▓▓▒▒▓▓▓▓▓▓▒     ▒▒▒░███████████████████████████\n████████████████████████████▓▒▒▓▓▒▓▒░▒▒▒▒▒░    ░▓▒▒  ███████████████████████████\n█████████████████████████████▓▓▒▒▒▒▒  ▒▒▒▒▒▒▒▓▓▓▓▒▒█████████████████████████████\n██████████████████████████████▓▓▒▓▓▒ ▒▓▓▒▓▒▒▒▒▒▒░▒██████████████████████████████\n██████████████████████████████▓▓▓▓▓▓▓▓▒  ▒▒▓░░░ ░▒██████████████████████████████\n███████████████████████████████▓▓▓▓▓▓▓▓▒▒▓█▓▓▓▒▒▒▒▒█████████████████████████████\n███████████████████████████████▓▓▓▓▓▒▒░ ▒▓▓▒▓▒▒▒▓▒▒█████████████████████████████\n████████████████████████████████▓▓▓▓▓▓▓▓▓▓▒ ▒░▒▓▓▒▒░██▓█████████████████████████\n████████████████████████████████▒▓▒▒▒▒  ░ ░▒▒▓▓▒▒▒  █▓█▓████████████████████████\n█████████████████▓▓▓▓▓██████████▒▓▓▓▓▓▓▓▓▓█▓▓▓▒▒▒  ▓▓█▓▓▓██▓▓███████████████████\n████████████▓██▓▓▓▓▓▓▓▓▓████████▒▒▓▓▓▓▓▓▓▓▓▓▓▓▒▒   ▓▓▓▓▓▓███▓█▓▓▓▓▓█████████████\n████████████▓██▓▓▓▓▓▓▓▓▓████████▒▒▒▒▓▓▓▓▓▓▓▓▓     ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████████\n█████████████▓▓▓▓▓▓▓▓▓▓█████████▒▒▒░▒▒▒▒▒░       ░▓▓▓▓▓▓▓▓▓█▓▓▓▓▓▓▓▓▓▓▓▓▓▓█▓████\n████████████▓██▓▓▓▓▓▓▓████▓█████▒▒▒░░▒▒▒▒       ░▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█████\n████████▓▓█▓▓▓▓█▓▓▓▓▓▓██▓████▓███▒▒▒▒▒███      ░ ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█▓█████\n█████████▓▓█▓█▓▓▓▓▓▓▓▓▓██▓▓▓▓▓███▒▒▒▒▓███▓▒░     ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓██▓█████\n████████▓██▓▓█▓▓▓▓▓▓▓▓███▓▓▓█████▒▓▓▓▓▓▒░ ░  ▒░ ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███████\n██████▓█▓█████▓▓▓▓▓▓████▓█▓██████▓▓▒▒▒░        ▒▒▓▓▓▓▓▓▓█▓▓▓▓▓▓▓▓▓▓▓▓▓███▓██████\n██████▓▓█▓▓██▓██▓████████▓█▓▓▓▓██▓▓▓▓░░           ░▓▓▓▓█▓▓▓▓▓▓▓▓▓▓▓█▓▓█▓██▓█████\n████▓▓██▓███▓███████▓███▓▓▓▓▓▓▓███▓▓▒░░░             ██▓▓▓▓▓▓▓▓▓▓▓▓▓▓██▓▓█▓█▓███\n█████▓▓▓█▓██▓███████████▓▓▓▓▓▓▓██░▒▒▒▒░               ▓▓██▓▓▓▓▓▓▓███▓██▓████████\n█████▓▓▓▓▓███████████████▓▓▓▓▓▓████▓▓▓▓▓▒░          █▓▓██▓█▓▓▓▓▓▓▓▓███▓▓██▓█▓███\n█████▓▓▓▓████████████████▓▓▓▓▓▓▓██▒▓██▓▓▓▓▓▓▒░    █▓████████▓█▓▓█████▓▓▓▓▓██▓▓▓█\n█████▓▓▓██████████████████▓▓▓▓▓▓██▒███████▓▓▓▓▓▓▒████▓██████████████▓█▓▓█████▓██', 'font-family: monospace; line-height: 0.9rem;')
+          console.groupEnd()
+        }
+
+        function awaitUserConfirm(autoplayTestResult) {
+          clearArea()
+
+          isAutoplayOkay = autoplayTestResult
+          mainEl.innerHTML = `<h3 style="font-family: monospace; font-size: 2rem; color: oklch(63.7% 0.237 25.331);">Warning</h3><div style="font-family: monospace; width: 100%; max-width: 600px; text-align: justify; font-size: 1.1rem;">This page may contain flashing lights and / or patterns, which could be a trigger for people with photosensitive epilepsy. Viewer discretion is advised.<br/><br/>The shrine also makes use of various video and audio elements, which may not behave properly without autplay. Most modern browsers block this functionality per default, so if you want the full experience, I would highly advise to change your browser settings for this page to allow for autoplay.<br/><br/>It seems like your browser <span style="color:${isAutoplayOkay ? 'lime' : 'red'}">${isAutoplayOkay ? 'allows' : 'blocks'}</span> autoplay, so ${isAutoplayOkay ? 'everything should work as intended.' : 'some things may not work as intended.'}</div><div style="display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 1rem; padding: 1rem; margin-top: 1.5rem; font-size: 1.25rem; font-family: monospace; text"><a href="#back">&larr; Go back</a><a href="#continue">Continue &rarr;</a></div>`
+
+          mainEl.querySelector('main a[href="#back"]').onclick = withPreventDefault(event => window.history.back())
+          mainEl.querySelector('main a[href="#continue"]').onclick = withPreventDefault(event => playValveIntro())
+        }
+
+        function playValveIntro() {
+          setTimeout(() => devMsg('Steam config directory: C:\\Program Files\\Steam\\steamapps\\common\\desolate source\\platform\\config'), 2000)
+
+          mainEl.innerHTML = '<div style="width: 100%; height: 100%; background: black;"><video style="width: 100%; height: 100%;" autoplay playsinline><source src="/shrines/source/valve.webm" type="video/webm" /></video></div>'
+
+          let video = mainEl.querySelector('video')
+          let onComplete = () => [window.removeEventListener('keydown', onKeyDown), viewLoading(() => loadAssetBatch(mainMenuAssets), viewMainMenu)]
+          let skip = () => [video.removeEventListener('ended', onComplete), onComplete()]
+          let onKeyDown = event => event.key === 'Escape' && skip()
+
+          video.play()
+          video.addEventListener('ended', onComplete)
+          window.addEventListener('keydown', onKeyDown)
+        }
+
+        function playAudio(bufferName, gain = 1.0) {
+          if (!audioBuffers[bufferName]) {
+            devErr('Failed to load sound "%s", file probably missing from disk / repository', bufferName)
+            return
+          }
+
+          let source = audioContext.createBufferSource()
+          let gainNode = audioContext.createGain()
+
+          source.buffer = audioBuffers[bufferName]
+          gainNode.gain.value = gain
+
+          source.connect(gainNode)
+          gainNode.connect(audioContext.destination)
+          source.start(0)
+        }
+
+        async function testAutoplaySupport() {
+          try {
+            await playAudio('null.mp3')
+            return true
+          } catch (e) {
+            if (e.name === 'NotAllowedError') return false
+            else if (e.name === 'QzAxVjEzNV80TjA3SDNS') throw 'rtx'
+            else throw e
+          }
+        }
+
+        function queryEnvironment() {
+          devMsg('checking hardware support for accellerated playback')
+          loadAssetBatch({ audioBuffers: { 'null.mp3': '/shrines/source/null.mp3' } })
+            .then(testAutoplaySupport)
+            .then(awaitUserConfirm)
+            .catch(devErr)
+        }
+
+        document.querySelector("script#shrinejs").remove()
+        mainEl = document.querySelector("main")
+        notifyAreaEl = document.querySelector("#notify-area")
+        queryEnvironment()
+      })()
+    </script>
+    <style>
+      :root {
+        background: #151515;
+        color: white;
+        font-family: 'Tahoma', 'Helvetica', 'DejaVu Sans', 'Arial', system-ui, sans-serif;
+      }
+
+      :root, html, body, main {
+        overscroll-behavior: none;
+        width: 100vw;
+        height: 100vh;
+        padding: 0;
+        margin: 0;
+        overflow: hidden;
+      }
+
+      * {
+        user-select: none;
+        -webkit-user-select: none;
+        box-sizing: border-box;
+        cursor: default;
+      }
+
+      @font-face {
+        font-family: 'halflife2';
+        src: url(/fonts/halflife2.ttf);
+      }
+
+      main {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+      }
+
+      #mobile-barrier {
+        display: none;
+      }
+
+      #notify-area {
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        align-items: start;
+        position: absolute;
+        top: 0.5rem;
+        left: 0.5rem;
+        z-index: 100;
+        pointer-events: none;
+        width: auto;
+      }
+
+      #notify-area .warning {
+        animation: warning-flash 0.75s infinite;
+      }
+
+      @keyframes warning-flash {
+        0% { background: rgb(248, 248, 248); }
+        50% { background: rgb(246, 203, 41); }
+        100% { background: rgb(248, 248, 248); }
+      }
+
+      .ui-window {
+        background: rgba(160, 160, 160, 0.75);
+        font-weight: 500;
+        letter-spacing: 1px;
+        backdrop-filter: blur(2px);
+        position: absolute;
+        border-radius: 0.3rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        align-items: stretch;
+      }
+
+      .ui-window .wnd-title {
+        flex-grow: 1;
+        font-size: 0.6rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 600;
+      }
+
+      .ui-window .wnd-titlebar {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.5rem 0.8rem 0.25rem 0.8rem;
+      }
+
+      .ui-window .wnd-content {
+        flex-grow: 1;
+      }
+
+      .ui-window .wnd-tabstrip {
+        display: flex;
+        flex-direction: row;
+        justify-content: start;
+        align-items: end;
+        padding: 0 0.8rem;
+      }
+
+      .ui-window .wnd-tabstrip a[data-tab-index] {
+        border: 1px solid black;
+        border-color: white black white white;
+        padding: 0.175rem 1rem 0.175rem 0.3rem;
+        font-size: 0.8rem;
+        color: white;
+      }
+
+      .ui-window .wnd-tabstrip a.cur[data-tab-index] {
+        border-bottom: 1px solid transparent;
+        padding-top: 0.25rem;
+      }
+
+      .ui-window .wnd-tabpane {
+        border: 1px solid black;
+        border-color: transparent black black white;
+        flex-grow: 1;
+        margin: 0 0.8rem 0.8rem 0.8rem;
+      }
+
+      a, a:visited, a:hover, a:active {
+        color: #FB7E14;
+        cursor: pointer;
+      }
+
+      .hl2-menu a, .hl2-menu a:visited, .hl2-menu a:active {
+        color: white;
+        cursor: default;
+        text-decoration: none;
+        font-weight: 500;
+        letter-spacing: 1px;
+      }
+
+      .hl2-menu a:hover {
+        opacity: 90%;
+      }
+
+      @media only screen and (max-width: 599px) {
+        main {
+          display: none;
+        }
+
+        #mobile-barrier {
+          display: block;
+        }
+      }
+    </style>
+  </body>
+</html>
