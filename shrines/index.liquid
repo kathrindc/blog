@@ -1,0 +1,35 @@
+---
+layout: "base"
+eleventyExcludeFromCollections: true
+---
+<section class="box">
+  <div class="box-title">
+    Shrines
+  </div>
+  <div class="box-content" style="max-height: 80vh; overflow-y: auto; display: grid; grid-template-columns: repeat(2, 1fr);">
+    <a href="/shrines/source" class="shrine-link">
+      <img src="/images/shrines/source/icon.webp" />
+      <span class="progress-sticker" title="Completion: 10%">10%</span>
+    </a>
+  </div>
+</section>
+<style>
+  .shrine-link {
+    text-decoration: none;
+    position: relative;
+    overflow: clip;
+  }
+
+  .progress-sticker {
+    position: absolute;
+    bottom: 0.45rem;
+    right: -1rem;
+    transform: rotateZ(-45deg);
+    background: yellow;
+    padding: 0 1rem;
+    color: red;
+    border: orange 1px solid;
+    border-left: none;
+    border-right: none;
+  }
+</style>

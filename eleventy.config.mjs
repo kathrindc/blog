@@ -16,6 +16,7 @@ export default async function(eleventyConfig) {
 	eleventyConfig.addPassthroughCopy("bundle.css")
 	eleventyConfig.addPassthroughCopy("images")
 	eleventyConfig.addPassthroughCopy("fonts")
+	eleventyConfig.addPassthroughCopy("shrines/source/*.{webm,ogg,mp3}")
 
 	// Configure feed generation plugin
 	eleventyConfig.addPlugin(feedPlugin, {
