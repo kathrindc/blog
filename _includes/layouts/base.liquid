@@ -35,6 +35,18 @@
           </a>
         </div>
       </nav>
+      {%- if changelog -%}
+        <div class="box">
+          <div class="box-title">
+            Site Changelog
+          </div>
+          <div class="box-content changelog">
+            {%- for change in changelog -%}
+              <div><b>{{ change.date }}:</b> {{ change.content }}</div>
+            {%- endfor -%}
+          </div>
+        </div>
+      {%- endif -%}
     </aside>
   </body>
 </html>

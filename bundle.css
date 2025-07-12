@@ -94,6 +94,7 @@ aside {
   flex-direction: column;
   justify-content: start;
   align-items: stretch;
+  gap: 0.8rem;
 }
 
 aside nav .box-content {
@@ -127,6 +128,22 @@ aside nav a:hover {
 aside nav a img {
   width: 2.5rem;
   height: 2.5rem;
+}
+
+aside div.changelog {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: stretch;
+  height: 10rem;
+  overflow-y: auto;
+  font-size: 0.8rem;
+}
+
+aside div.changelog div:not(:last-of-type) {
+  border-bottom: 1px solid rgb(192, 192, 192);
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 img.webstamp {

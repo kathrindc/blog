@@ -1,4 +1,5 @@
 import { feedPlugin } from "@11ty/eleventy-plugin-rss"
+import changelog from "./changelog.json" with { type: "json" }
 
 export default async function(eleventyConfig) {
 	// Add alias for commonly used layouts
@@ -36,6 +37,9 @@ export default async function(eleventyConfig) {
 			},
 		},
 	})
+
+	// Load changelog from the JSON file
+	eleventyConfig.addGlobalData("changelog", () => changelog)
 }
 
 function toSCMPlayer(playlist) {
