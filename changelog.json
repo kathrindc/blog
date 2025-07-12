@@ -1,10 +1,38 @@
 [
 	{
 		"date": "2025/07/12",
+		"content": "Populated changelog retroactively according to Git history. I used the recent redesign as a cut-off point."
+	},
+	{
+		"date": "2025/07/12",
 		"content": "Added a basic changelog, should make it easier to see what's changed."
 	},
 	{
 		"date": "2025/07/11",
 		"content": "Published the current state of my source shrine."
+	},
+	{
+		"date": "2025/07/07",
+		"content": "I was accepted into the Aero Webring! Added the widget to the landing page."
+	},
+	{
+		"date": "2025/07/06",
+		"content": "Seems like some of the blog posts aren't getting their date property filled in correctly. I've set them to fixed values manually for now."
+	},
+	{
+		"date": "2025/07/06",
+		"content": "Added new blog post: We saw Ado live in Milan"
+	},
+	{
+		"date": "2025/07/02",
+		"content": "SCMPlayer seems to be scuffed, so I had to remove it for now. Added a blog posts to elaborate."
+	},
+	{
+		"date": "2025/06/24",
+		"content": "Update blog post page layout to include some metadata about the post."
+	},
+	{
+		"date": "2025/06/24",
+		"content": "I redesigned the site! It should be a lot less bland to look at now. New blog post with the details!"
 	}
 ]
