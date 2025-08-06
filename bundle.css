@@ -22,11 +22,42 @@
   height: 100vh;
 }
 
+/* - Sane Containers */
+
 :root, html, body, main {
   margin: 0;
   padding: 0;
   width: 100%;
 }
+
+body {
+  position: relative;
+  display: flex;
+  gap: 0.75rem;
+  margin: 1rem auto;
+  max-width: 960px;
+  flex-direction: row;
+  justify-content: start;
+  align-items: start;
+}
+
+main {
+  display: grid;
+  gap: 0.75rem;
+  padding-bottom: 1rem;
+  flex-grow: 1;
+  grid-auto-rows: min-content;
+}
+
+p {
+  margin: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* - Box Styles */
 
 section.box, aside.box, article.box {
   border: 1px solid rgba(232, 253, 255, 0.5);
@@ -36,10 +67,6 @@ section.box, aside.box, article.box {
   justify-content: start;
   align-items: stretch;
   height: fit-content;
-}
-
-p {
-  margin: 0;
 }
 
 .box > div.box-title {
@@ -64,28 +91,7 @@ p {
   padding: 0.33rem;
 }
 
-.col-span-2 {
-  grid-column: span 2 / span 2;
-}
-
-body {
-  display: flex;
-  gap: 0.75rem;
-  margin: 1rem auto;
-  max-width: 960px;
-  flex-direction: row;
-  justify-content: start;
-  align-items: start;
-  box-sizing: border-box;
-}
-
-main {
-  display: grid;
-  gap: 0.75rem;
-  padding-bottom: 1rem;
-  flex-grow: 1;
-  grid-auto-rows: min-content;
-}
+/* - Side Menu */
 
 aside {
   width: 100%;
@@ -146,6 +152,8 @@ aside div.changelog div:not(:last-of-type) {
   margin-bottom: 0.5rem;
 }
 
+/* - Decorations */
+
 img.webstamp {
   --radius: 6px;
 
@@ -161,6 +169,8 @@ img.webstamp {
   height: 2.4rem;
   padding: 0.25rem;
 }
+
+/* - Post Layout */
 
 article h3.post-title {
   margin-top: 0.5rem;
@@ -184,8 +194,86 @@ article p:not(:last-child) {
   margin-bottom: 0.75rem;
 }
 
+/* - Utility Classes */
+
+.col-span-2 {
+  grid-column: span 2 / span 2;
+}
+
+/* - Mobile Support */
+
+.mobile-top {
+  display: none;
+}
+
 @media (max-width: 970px) {
   body {
+    flex-direction: column;
+    align-items: center;
+    margin: unset;
+    overflow-x: clip;
+  }
+
+  main {
     padding: 0 0.3rem;
+    margin-top: 3.25rem;
+  }
+
+  aside {
+    max-width: unset;
+    padding: 0 0.3rem;
+    margin-bottom: 1rem;
+  }
+
+  aside nav {
+    position: fixed;
+    top: 2.75rem;
+    left: 0.25rem;
+    transition: transform 250ms ease-out allow-discrete;
+    height: calc(100vh - 2.5rem) !important;
+    width: 50%;
+    z-index: 30;
+    transform: translateX(-105%);
+  }
+
+  aside nav[data-open=true] {
+    transform: translateX(0%);
+  }
+
+  .mobile-top {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    position: fixed;
+    z-index: 30;
+    top: 0;
+    left: 0;
+    height: 2.5rem;
+    width: 100%;
+    color: white;
+    background: #ba6ee0;
+    background: -webkit-linear-gradient(180deg, rgba(186, 110, 224, 1) 52%, rgba(133, 67, 168, 1) 100%);
+    background: -moz-linear-gradient(180deg, rgba(186, 110, 224, 1) 52%, rgba(133, 67, 168, 1) 100%);
+    background: linear-gradient(180deg, rgba(186, 110, 224, 1) 52%, rgba(133, 67, 168, 1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#BA6EE0", endColorstr="#8543A8", GradientType=0);
+  }
+
+  .mobile-top button {
+    margin-left: 0.25rem;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.25rem;
+    border: 1px solid #7930A1;
+    background: #8F4BB2;
+    cursor: pointer;
+  }
+
+  .mobile-top span {
+    display: block;
+    margin: 0 0.5rem 0 auto;
+  }
+
+  .mobile\:rcolumn {
+    flex-direction: column-reverse !important;
   }
 }

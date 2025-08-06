@@ -8,6 +8,13 @@
     <link rel="stylesheet" href="/bundle.css" />
   </head>
   <body>
+    <div class="mobile-top">
+      <button type="button">
+      </button>
+      <span>
+        Kat's Blog
+      </span>
+    </div>
     <main style="{{ grid | toGridStyle }}">
       {{ content }}
     </main>
@@ -48,5 +55,52 @@
         </div>
       {%- endif -%}
     </aside>
+    <script defer>
+      (() => {
+        let mobileNavToggle = document.querySelector('.mobile-top button')
+        let siteNav = document.querySelector('aside nav')
+        let configureMobileNav = !!mobileNavToggle && !!siteNav
+
+        function preventDefault(fn) {
+          return event => {
+            event.preventDefault()
+            fn()
+          }
+        }
+
+        if (configureMobileNav) {
+          let navState = false
+
+          function showNav(visible) {
+            if (navState === visible) {
+              return
+            }
+
+            if (visible === undefined) {
+              visible = !navState
+            }
+
+            siteNav.setAttribute('data-open', visible)
+
+            if (visible) {
+              let backdrop = document.createElement('div')
+              backdrop.id = 'mobile-nav-backdrop'
+              backdrop.style = 'position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 25; background: #000; opacity: 60%;'
+              backdrop.onclick = preventDefault(() => showNav(false))
+
+              document.body.appendChild(backdrop)
+            } else {
+              document.querySelector('#mobile-nav-backdrop')?.remove()
+            }
+
+            navState = visible
+          }
+
+          mobileNavToggle.onclick = preventDefault(() => showNav())
+        }
+
+        console.log(`page script ready (nav=${configureMobileNav})`)
+      })()
+    </script>
   </body>
 </html>
