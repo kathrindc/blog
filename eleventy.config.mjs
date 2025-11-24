@@ -33,7 +33,7 @@ export default async function(eleventyConfig) {
 			subtitle: "A strange being beyond time and space. 👾",
 			base: "https://toast.ws/",
 			author: {
-				name: "Kathrin De Cecco",
+				name: "Kathrin O'Brien",
 			},
 		},
 	})
