@@ -54,6 +54,18 @@
           </div>
         </div>
       {%- endif -%}
+      <div class="box">
+        <div class="box-title">
+          Are we Half-Life 3 yet?
+        </div>
+        <div class="box-content">
+          <center>
+            <img src="/images/hl3.webp" style="width:80%;margin-bottom:4px" />
+            <p style="margin-bottom:4px">As of 2025/11/24: wait for it...</p>
+            <p style="font-size:0.75rem;">It's been <span id="days-since-hl2ep2"></span> days since HL2EP2</p>
+          </center>
+        </div>
+      </div>
     </aside>
     <script defer>
       (() => {
@@ -97,6 +109,14 @@
           }
 
           mobileNavToggle.onclick = preventDefault(() => showNav())
+        }
+
+        let hl2ep2days = document.getElementById('days-since-hl2ep2')
+
+        if (hl2ep2days) {
+          let hl2ep2 = new Date(2007, 9, 10);
+          let now = new Date();
+          hl2ep2days.innerText = `${Math.round((now - hl2ep2) / (1000 * 60 * 60 * 24))}`
         }
 
         console.log(`page script ready (nav=${configureMobileNav})`)
