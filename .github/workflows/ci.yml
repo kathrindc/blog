@@ -33,18 +33,12 @@ jobs:
           name: _site
       - name: Unpack tarball
         run: tar xzvf site.tar.xz
-      - name: Initialize the ssh-agent
-        uses: webfactory/ssh-agent@v0.4.1
+      - name: Upload to host
+        uses: Dylan700/sftp-upload-action@latest
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-      - name: Scan the host key
-        run: mkdir -p ~/.ssh/ && ssh-keyscan -H $DEPLOY_SERVER >> ~/.ssh/known_hosts
-        env:
-          DEPLOY_SERVER: ${{ secrets.DEPLOY_SERVER }}
-      - name: Deploy the website
-        run: >-
-          rsync -avx --delete --exclude '.ssh' _site/ $DEPLOY_USERNAME@$DEPLOY_SERVER:$DEPLOY_DIR
-        env:
-          DEPLOY_SERVER: ${{ secrets.DEPLOY_SERVER }}
-          DEPLOY_USERNAME: ${{ secrets.DEPLOY_USERNAME }}
-          DEPLOY_DIR: ${{ secrets.DEPLOY_DIR }}
+          server: ${{secrets.SFTP_HOST}}
+          port: ${{secrets.SFTP_PORT}}
+          username: ${{secrets.SFTP_USERNAME}}
+          password: ${{secrets.SFTP_PASSWORD}}
+          uploads: |
+            ./_site => /
